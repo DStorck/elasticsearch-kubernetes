@@ -23,6 +23,5 @@ discovery:
     minimum_master_nodes: 2
     
 path:
-  plugins: /usr/share/elasticsearch/plugins
-  data: /mnt/elasticsearch/data
-  logs: /mnt/elasticsearch/logs
+  data: /usr/share/elasticsearch/data
+  logs: /usr/share/elasticsearch/logs
