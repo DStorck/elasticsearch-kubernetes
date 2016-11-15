@@ -16,7 +16,6 @@ spec:
   clusterIP: None
   selector:
     name: elasticsearch-data
-  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -46,7 +45,21 @@ spec:
         name: elasticsearch-master
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
+        pod.alpha.kubernetes.io/init-containers: '[
+            {
+                "name": "max-map-count-set",
+                "image": "quay.io/samsung_cnct/set_max_map_count:1.1",
+                "imagePullPolicy": "Always",
+                "volumeMounts": [
+                    {
+                        "name": "hostproc",
+                        "mountPath": "/hostproc"
+                    }
+                ]
+            }]'
     spec:
+      serviceAccount: elasticsearch
+      serviceAccountName: elasticsearch
       containers:
       - name: elasticsearch
         image: quay.io/samsung_cnct/elasticsearch:0.1
@@ -54,10 +67,10 @@ spec:
         - containerPort: 9300
         resources:
           limits:
-            cpu: 200m
+            cpu: 500m
             memory: 4Gi
           requests:
-            cpu: 200m
+            cpu: 500m
             memory: 4Gi
         env:
         - name: CLUSTER_NAME
@@ -69,7 +82,7 @@ spec:
         - name: SERVICE
           value: "elasticsearch-cluster"
         - name: ES_JAVA_OPTS
-          value: "-Xms2g -Xmx2g -Djava.net.preferIPv4Stack=true"
+          value: "-Xms3g -Xmx3g -Djava.net.preferIPv4Stack=true"
         - name: KUBERNETES_NAMESPACE
           valueFrom:
             fieldRef:
@@ -82,6 +95,10 @@ spec:
         volumeMounts:
         - name: esdata
           mountPath: /usr/share/elasticsearch/data
+      volumes:
+      - name: hostproc
+        hostPath: 
+          path: /proc
   volumeClaimTemplates:
   - metadata:
       name: esdata
@@ -107,7 +124,21 @@ spec:
         name: elasticsearch-data
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
+        pod.alpha.kubernetes.io/init-containers: '[
+            {
+                "name": "max-map-count-set",
+                "image": "quay.io/samsung_cnct/set_max_map_count:1.1",
+                "imagePullPolicy": "Always",
+                "volumeMounts": [
+                    {
+                        "name": "hostproc",
+                        "mountPath": "/hostproc"
+                    }
+                ]
+            }]'
     spec:
+      serviceAccount: elasticsearch
+      serviceAccountName: elasticsearch
       containers:
       - name: elasticsearch
         image: quay.io/samsung_cnct/elasticsearch:0.1
@@ -116,7 +147,7 @@ spec:
         - containerPort: 9200
         resources:
           limits:
-            cpu: 1000m
+            cpu: 500m
             memory: 4Gi
           requests:
             cpu: 500m
@@ -131,7 +162,7 @@ spec:
         - name: SERVICE
           value: "elasticsearch-cluster"
         - name: ES_JAVA_OPTS
-          value: "-Xms2g -Xmx2g -Djava.net.preferIPv4Stack=true"
+          value: "-Xms3g -Xmx3g -Djava.net.preferIPv4Stack=true"
         - name: KUBERNETES_NAMESPACE
           valueFrom:
             fieldRef:
@@ -144,6 +175,10 @@ spec:
         volumeMounts:
         - name: esdata
           mountPath: /usr/share/elasticsearch/data
+      volumes:
+      - name: hostproc
+        hostPath: 
+          path: /proc
   volumeClaimTemplates:
   - metadata:
       name: esdata
