@@ -49,7 +49,6 @@ spec:
             {
                 "name": "max-map-count-set",
                 "image": "quay.io/samsung_cnct/set_max_map_count:1.1",
-                "imagePullPolicy": "Always",
                 "volumeMounts": [
                     {
                         "name": "hostproc",
@@ -64,7 +63,9 @@ spec:
       - name: elasticsearch
         image: quay.io/samsung_cnct/elasticsearch:0.1
         ports:
-        - containerPort: 9300
+        - name: cluster-comms 
+          containerPort: 9300
+        #  resource notes:  master is light weight so half a CPU.  Less then 4GB causes the container to OOM
         resources:
           limits:
             cpu: 500m
@@ -74,13 +75,14 @@ spec:
             memory: 4Gi
         env:
         - name: CLUSTER_NAME
-          value: "k8s-production"
+          value: "elasticsearch-cluster"
         - name: NODE_DATA
           value: "false"
         - name: NODE_MASTER
           value: "true"
         - name: SERVICE
           value: "elasticsearch-cluster"
+        #  the min/max *must* be the same due to elasticsearch 5.0 bootstrap checks
         - name: ES_JAVA_OPTS
           value: "-Xms3g -Xmx3g -Djava.net.preferIPv4Stack=true"
         - name: KUBERNETES_NAMESPACE
@@ -108,6 +110,7 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
+          #  set to small so when exploring with this the user doesn't accidentally create very large disks
           storage: 20Gi
 ---
 apiVersion: apps/v1alpha1
@@ -128,7 +131,6 @@ spec:
             {
                 "name": "max-map-count-set",
                 "image": "quay.io/samsung_cnct/set_max_map_count:1.1",
-                "imagePullPolicy": "Always",
                 "volumeMounts": [
                     {
                         "name": "hostproc",
@@ -143,8 +145,12 @@ spec:
       - name: elasticsearch
         image: quay.io/samsung_cnct/elasticsearch:0.1
         ports:
-        - containerPort: 9300
-        - containerPort: 9200
+        - name: cluster-comms
+          containerPort: 9300
+        - name: http
+          containerPort: 9200
+        #  resource notes:  datanodes are pretty heavy.  These should be modified up for a real production setting
+        #  recommendation is two cores and 20GB of memory for the containers
         resources:
           limits:
             cpu: 500m
@@ -154,13 +160,15 @@ spec:
             memory: 4Gi
         env:
         - name: CLUSTER_NAME
-          value: "k8s-production"
+          value: "elasticsearch-cluster"
         - name: NODE_DATA
           value: "true"
         - name: NODE_MASTER
           value: "false"
         - name: SERVICE
           value: "elasticsearch-cluster"
+        #  the min/max *must* be the same due to elasticsearch 5.0 bootstrap checks.  For a production settings
+        #  this should be 16GB.  Don't go over 32GB as the JVM starts to have issues.
         - name: ES_JAVA_OPTS
           value: "-Xms3g -Xmx3g -Djava.net.preferIPv4Stack=true"
         - name: KUBERNETES_NAMESPACE
@@ -188,4 +196,5 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
+          #  set to small so when exploring with this the user doesn't accidentally create very large disks
           storage: 20Gi
