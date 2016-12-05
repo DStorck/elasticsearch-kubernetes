@@ -2,7 +2,7 @@
 docker file and yamls for kubernetes deploys
 
 ##  purpose
-static configs for a production grade elasticsearch deploy on kubernetes. this 
+Static configs for a production grade elasticsearch deploy on kubernetes. this 
 is also the basis for the helm chart in github.com/samsung_cnct/k2-charts
 
 ## arch details
@@ -19,6 +19,7 @@ master node (each):
  - 1/2 CPU (500m)
 
 data nodes (each):
+#  Official guide here:  https://www.elastic.co/guide/en/elasticsearch/guide/current/indexing-performance.html
  - 4GB  (first knob to turn up for performance reasons.  Do not exceed 31GB, the jvm breaks down)
  - 1/2 CPU (500m)
  - 20GB of disk (this should be increased greatly for production use)
