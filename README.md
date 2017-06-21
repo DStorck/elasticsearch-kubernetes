@@ -1,33 +1,31 @@
-# elasticsearch-kubernetes
-docker file and yamls for kubernetes deploys
+# Elasticsearch-Kubernetes
+Dockerfile and yamls for elasticsearch deployment on Kubernetes. ElasticSearch is an open source, RESTful search engine built on top of Apache Lucene and released under an Apache license. It is Java-based and can search and index document files in diverse formats.
 
-##  purpose
-Static configs for a production grade elasticsearch deploy on kubernetes. this 
-is also the basis for the helm chart in github.com/samsung_cnct/k2-charts
+## Purpose
+Static configs for a production grade elasticsearch deploy on kubernetes. This
+is also the basis for the helm chart in https://github.com/samsung-cnct/k2-charts/tree/master/elasticsearch
 
-## arch details
+## Architecture details
 master nodes:
- - 3 node pet-set
+ - 3 node statefulset
  - if scaled, need to update quorum information
-data nodes:
- - 3 node pet-set
+
+ data nodes:
+ - 3 node statefulset
  - scale at will
 
-## kubernetes resources
+## Kubernetes Resources
 master node (each):
  - 4GB
  - 1/2 CPU (500m)
 
 data nodes (each):
-#  Official guide here:  https://www.elastic.co/guide/en/elasticsearch/guide/current/indexing-performance.html
  - 4GB  (first knob to turn up for performance reasons.  Do not exceed 31GB, the jvm breaks down)
  - 1/2 CPU (500m)
  - 20GB of disk (this should be increased greatly for production use)
 
-## kubernetes requirements
-this uses petsets with pvc templates and dynamic persistent volume creation.  This means it needs
-a kubernetes version of 1.4.x.  Kubernetes version 1.5.x will not work as the name is changing from
-petset to statefulset.  This repo will upgrade after 1.5 goes live.
-
-## how to use
+## How to implement on running Kubernetes cluster
 kubectl create -f es.yml
+
+
+###  [Guide to Elasticsearch Index Performance](https://www.elastic.co/guide/en/elasticsearch/guide/current/indexing-performance.html)

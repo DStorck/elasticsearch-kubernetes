@@ -32,7 +32,7 @@ spec:
     app: elasticsearch
 ---
 apiVersion: apps/v1alpha1
-kind: PetSet
+kind: StatefulSet
 metadata:
   name: elasticsearch-master
 spec:
@@ -63,7 +63,7 @@ spec:
       - name: elasticsearch
         image: quay.io/samsung_cnct/elasticsearch:0.1
         ports:
-        - name: cluster-comms 
+        - name: cluster-comms
           containerPort: 9300
         #  resource notes:  master is light weight so half a CPU.  Less then 4GB causes the container to OOM
         resources:
@@ -99,7 +99,7 @@ spec:
           mountPath: /usr/share/elasticsearch/data
       volumes:
       - name: hostproc
-        hostPath: 
+        hostPath:
           path: /proc
   volumeClaimTemplates:
   - metadata:
@@ -185,7 +185,7 @@ spec:
           mountPath: /usr/share/elasticsearch/data
       volumes:
       - name: hostproc
-        hostPath: 
+        hostPath:
           path: /proc
   volumeClaimTemplates:
   - metadata:
