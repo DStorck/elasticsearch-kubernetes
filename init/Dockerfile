@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM elasticsearch:5.4.0
+FROM elasticsearch:5.4.2
 
-RUN bin/elasticsearch-plugin install io.fabric8:elasticsearch-cloud-kubernetes:5.4.0
+RUN bin/elasticsearch-plugin install io.fabric8:elasticsearch-cloud-kubernetes:5.4.2
 
 ADD elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
