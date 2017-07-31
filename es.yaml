@@ -1,14 +1,26 @@
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: elasticsearch
+  namespace: kube-logging
+  labels:
+    app: elasticsearch
+    version: v1
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: elasticsearch
+  namespace: kube-logging
   labels:
     app: elasticsearch
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+    kubernetes.io/name: "Elasticsearch"
 spec:
   ports:
   - port: 9200
@@ -21,8 +33,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: elasticsearch-cluster
+  namespace: kube-logging
   labels:
     app: elasticsearch-cluster
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+    kubernetes.io/name: "Elasticsearch"
 spec:
   ports:
   - port: 9300
@@ -30,11 +46,13 @@ spec:
   clusterIP: None
   selector:
     app: elasticsearch
+
 ---
-apiVersion: apps/v1alpha1
+apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: elasticsearch-master
+  namespace: kube-logging
 spec:
   serviceName: "elasticsearch-master"
   replicas: 3
@@ -112,11 +130,13 @@ spec:
         requests:
           #  set to small so when exploring with this the user doesn't accidentally create very large disks
           storage: 20Gi
+
 ---
-apiVersion: apps/v1alpha1
-kind: PetSet
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: elasticsearch-data
+  namespace: kube-logging
 spec:
   serviceName: "elasticsearch-data"
   replicas: 3

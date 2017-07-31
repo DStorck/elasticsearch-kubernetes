@@ -29,3 +29,6 @@ kubectl create -f es.yml
 
 
 ###  [Guide to Elasticsearch Index Performance](https://www.elastic.co/guide/en/elasticsearch/guide/current/indexing-performance.html)
+
+## Helm Chart
+A Helm Chart based on this repo can be found in [K2-Charts](https://github.com/samsung-cnct/k2-charts/tree/master/elasticsearch).
