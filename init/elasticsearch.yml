@@ -1,7 +1,7 @@
 cluster.name: ${CLUSTER_NAME}
 network.host: 0.0.0.0
 
-node: 
+node:
   data: ${NODE_DATA}
   master: ${NODE_MASTER}
   name: ${NODE_NAME}
@@ -17,11 +17,9 @@ gateway:
   #expected_nodes: total number of nodes
   recover_after_time: 5m
 
-discovery:
-  type: kubernetes
-  zen:
-    minimum_master_nodes: 2
-    
+discovery.zen.hosts_provider: kubernetes
+discovery.zen.minimum_master_nodes: 2
+
 path:
   data: /usr/share/elasticsearch/data
   logs: /usr/share/elasticsearch/logs
